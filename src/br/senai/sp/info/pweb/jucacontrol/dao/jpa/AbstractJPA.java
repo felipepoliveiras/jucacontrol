@@ -63,13 +63,9 @@ public abstract class AbstractJPA<T> implements DAO<T>{
 		getSession().persist(obj);
 	}
 	
-	@SuppressWarnings("serial")
+	@SuppressWarnings({ "serial", "unchecked" })
 	public List<T> buscarPorCampo(String campo, Object valor){
-		return buscarPorCampos(new HashMap<String, Object>() {
-			{
-				put(campo, valor);
-			}
-		});
+		return getSession().createQuery("FROM " + getEntityName() + " o WHERE o." + campo + " = :valor").setParameter("valor", valor).list();
 	}
 	
 	public List<T> buscarPorCampos(Map<String, Object> campos){

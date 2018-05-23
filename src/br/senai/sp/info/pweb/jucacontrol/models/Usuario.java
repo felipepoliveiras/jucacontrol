@@ -1,6 +1,9 @@
 package br.senai.sp.info.pweb.jucacontrol.models;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,11 +16,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.DigestUtils;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class Usuario implements Authentication{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -107,5 +113,52 @@ public class Usuario {
 	
 	public void setCaminhoFoto(String caminhoFoto) {
 		this.caminhoFoto = caminhoFoto;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> autorizacoes = new ArrayList<>(2);
+		
+		if(this.getTipo() == TiposUsuario.ADMINISTRADOR) {
+			autorizacoes.add(new SimpleGrantedAuthority("ROLE_ADM"));
+		}
+		
+		autorizacoes.add(new SimpleGrantedAuthority("ROLE_COMUM"));
+		
+		return autorizacoes;
+	}
+
+	@Override
+	public Object getCredentials() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getDetails() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getPrincipal() {
+		return this;
+	}
+
+	@Override
+	public boolean isAuthenticated() {
+		return true;
+	}
+
+	@Override
+	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
 	}
 }
